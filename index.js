@@ -5,6 +5,8 @@ const app = express()
 
 //to be allowed to pass json data to node js it's for security concerns
 app.use(express.json())
+//to add data in a formUrl
+app.use(express.urlencoded({extended: false}))
 
 
 app.get('/', (req, res) => {
