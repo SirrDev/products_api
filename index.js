@@ -62,6 +62,23 @@ app.put('/api/product/:id', async (req, res) => {
     }
 })
 
+// Deleting a specific product
+app.delete('/api/product/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const product = await Product.findByIdAndDelete(id)
+
+        if(!product) {
+            return res.status(404).json({message: "Product was not found!"})
+        }
+
+        res.status(200).json({message: "Product deleted successfully"})
+
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 // Setting connection string and port confuguration
 const port = process.env.PORT || 3000
@@ -69,7 +86,7 @@ const port = process.env.PORT || 3000
 mongoose.connect("mongodb+srv://sirrdev:admin905SirrDev-_&3480@productsdb.r0qweb5.mongodb.net/Node-API?retryWrites=true&w=majority&appName=ProductsDB")
 .then(() => {
     console.log('Connected to the database!')
-    app.listen(port, () => console.log(`Listenin on port ${port}...`))
+    app.listen(port, () => console.log(`Listening on port ${port}...`))
     
     app.get('/', (req, res) => {
         
