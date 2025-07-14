@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const Product = require('./models/product.model.js')
 const app = express()
 
 //to be allowed to pass json data to node js it's for security concerns
@@ -10,12 +11,23 @@ app.get('/', (req, res) => {
     res.send('hello')
 })
 
-app.post('/api/products', (req, res) => {
-    // Getting data sent in the body of the request and displaying it
-    console.log(req.body)
+app.get('/api/products', async (req, res) => {
+    try {
+        const products = await Product.find({})
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
 
-    // Notification
-    res.send(req.body)
+app.post('/api/products', async (req, res) => {
+    try {
+        //Saving data in an instance of Product wich is product
+        const product = await Product.create(req.body)
+        res.status(200).json(product)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
 })
 
 const port = process.env.PORT || 3000
