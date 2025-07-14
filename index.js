@@ -1,84 +1,22 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const Product = require('./models/product.model.js')
+const productRoute = require('./routes/product.routes.js')
 const app = express()
+
+// Middlewares
 
 //to be allowed to pass json data to node js it's for security concerns
 app.use(express.json())
 //to add data in a formUrl
 app.use(express.urlencoded({extended: false}))
 
+// Routes
+app.use('/api/products', productRoute)
+
 
 app.get('/', (req, res) => {
     res.send('hello')
-})
-
-// Reading all products
-app.get('/api/products', async (req, res) => {
-    try {
-        const products = await Product.find({})
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Reading a specific product using its ID
-app.get('/api/product/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-        const product = await Product.findBy(id)
-        res.status(200).json(product)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Adding product
-app.post('/api/products', async (req, res) => {
-    try {
-        //Saving data in an instance of Product wich is product
-        const product = await Product.create(req.body)
-        res.status(200).json(product)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Updating a specific product
-app.put('/api/product/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-        //update the product that has the ID id with whatever is in req.body
-        const product = await Product.findByAndUpdate(id, req.body)
-
-        if(!product) {
-            return res.status(404).json({message: "Product was not found!"})
-        }
-
-        const updatedProduct = await Product.findById(id)
-        res.status(200).json(updatedProduct)
-
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Deleting a specific product
-app.delete('/api/product/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-        const product = await Product.findByIdAndDelete(id)
-
-        if(!product) {
-            return res.status(404).json({message: "Product was not found!"})
-        }
-
-        res.status(200).json({message: "Product deleted successfully"})
-
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
 })
 
 
